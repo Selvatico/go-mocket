@@ -1,5 +1,5 @@
 
-###Go-Mocket
+### Go-Mocket
 
 Go-Mocket is library inspired by [DATA-DOG/go-sqlmock](https://github.com/DATA-DOG/go-sqlmock)
 As inspiration library it is implementation of [sql/driver](https://godoc.org/database/sql/driver) interface but at the same time follows different approaches and has only similar API.
@@ -17,7 +17,7 @@ List of features in the library:
 
 **NOTE** Please be aware that driver catches SQL without DB specifics. Generating of queries is done by *sql* package
 
-####Install
+#### Install
 
 ```
 go get github.com/selvatico/go-mocket
