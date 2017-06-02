@@ -1,3 +1,4 @@
+
 ###Go-Mocket
 
 Go-Mocket is library inspired by [DATA-DOG/go-sqlmock](https://github.com/DATA-DOG/go-sqlmock)
@@ -17,11 +18,13 @@ List of features in the library:
 **NOTE** Please be aware that driver catches SQL without DB specifics. Generating of queries is done by *sql* package
 
 ####Install
+
 ```
 go get github.com/selvatico/go-mocket
 ```
 
 #### Usage
+
 There are two possible ways to use `mocket`:
 
 * Chaining API
@@ -30,7 +33,8 @@ There are two possible ways to use `mocket`:
 ##### Enabling driver
 
 Somewhere in you code to setup a tests
-```
+
+```go
 import (
     "database/sql"
     mocket "github.com/selvatico/go-mocket"
@@ -47,9 +51,11 @@ func SetupTests() {
     db, err := sql.Open(driver, source)
 }
 ```
+
 Now if use singleton instance of DB it will use everywhere mocked connection.
 
 ##### Chain usage
+
 ###### Example of mocking by pattern
 
 ```go
