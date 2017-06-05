@@ -8,6 +8,7 @@ import (
 
 var _ = log.Printf
 
+// FakeDriver implements driver interface in sql package
 type FakeDriver struct {
 	mu         sync.Mutex // guards 3 following fields
 	openCount  int        // conn opens
@@ -40,6 +41,7 @@ func (t *table) columnIndex(name string) int {
 	return -1
 }
 
+// Open returns a new connection to the database.
 func (d FakeDriver) Open(database string) (driver.Conn, error) {
 	return &FakeConn{db: d.getDB(database)}, nil
 }

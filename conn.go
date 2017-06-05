@@ -8,6 +8,7 @@ import (
 	"sync"
 )
 
+// FakeConn implements connection
 type FakeConn struct {
 	db     *FakeDB
 	currTx *FakeTx // Transaction pointer
@@ -19,6 +20,7 @@ func (c *FakeConn) isBad() bool {
 	return false
 }
 
+// Begin starts and returns a new transaction.
 func (c *FakeConn) Begin() (driver.Tx, error) {
 	if c.isBad() {
 		return nil, driver.ErrBadConn
@@ -35,28 +37,34 @@ func (c *FakeConn) Close() (err error) {
 	return nil
 }
 
+// Exec is deprecated
 func (c *FakeConn) Exec(query string, args []driver.Value) (driver.Result, error) {
 	panic("ExecContext was not called.")
 }
 
+// ExecContext is optional to implement and it returns skip
 func (c *FakeConn) ExecContext(ctx context.Context, query string, args []driver.NamedValue) (driver.Result, error) {
 	return nil, driver.ErrSkip
 }
 
+// Query is deprecated
 func (c *FakeConn) Query(query string, args []driver.Value) (driver.Rows, error) {
 	panic("QueryContext was not called.")
 }
 
-// We do
+// QueryContext is optional
 func (c *FakeConn) QueryContext(ctx context.Context, query string, args []driver.NamedValue) (driver.Rows, error) {
 	return nil, driver.ErrSkip
 }
 
-// Should not be called
+// Prepare is optional
 func (c *FakeConn) Prepare(query string) (driver.Stmt, error) {
 	panic("use Prepare")
 }
 
+// PrepareContext returns a prepared statement, bound to this connection.
+// context is for the preparation of the statement,
+// it must not store the context within the statement itself.
 func (c *FakeConn) PrepareContext(ctx context.Context, query string) (driver.Stmt, error) {
 	var firstStmt = &FakeStmt{q: query, connection: c}          // Create statement
 	firstStmt.placeholders = len(strings.Split(query, "?")) - 1 // Checking how many placeholders do we have

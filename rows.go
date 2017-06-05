@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// RowsCursor is implementation of Rows sql interface
 type RowsCursor struct {
 	cols    []string
 	colType [][]string
@@ -28,6 +29,7 @@ type row struct {
 	cols []interface{} // must be same size as its table colname + coltype
 }
 
+// Close closes the rows iterator.
 func (rc *RowsCursor) Close() error {
 	if !rc.closed {
 		for _, bs := range rc.bytesClone {
@@ -38,14 +40,19 @@ func (rc *RowsCursor) Close() error {
 	return nil
 }
 
+// Columns returns the names of the columns.
 func (rc *RowsCursor) Columns() []string {
 	return rc.cols
 }
 
+// RowsColumnTypeScanType may be implemented by Rows. It should return
+// the value type that can be used to scan types into.
 func (rc *RowsCursor) ColumnTypeScanType(index int) reflect.Type {
 	return colTypeToReflectType(rc.colType[rc.posSet][index])
 }
 
+// Next is called to populate the next row of data into
+// the provided slice.
 func (rc *RowsCursor) Next(accumulator []driver.Value) error {
 	if rc.closed {
 		return errors.New("fake_db_driver: cursor is closed")
@@ -75,10 +82,14 @@ func (rc *RowsCursor) Next(accumulator []driver.Value) error {
 	return nil
 }
 
+// HasNextResultSet is called at the end of the current result set and
+// reports whether there is another result set after the current one.
 func (rc *RowsCursor) HasNextResultSet() bool {
 	return rc.posSet < len(rc.rows)-1
 }
 
+// NextResultSet advances the driver to the next result set even
+// if there are remaining rows in the current result set.
 func (rc *RowsCursor) NextResultSet() error {
 	if rc.HasNextResultSet() {
 		rc.posSet++

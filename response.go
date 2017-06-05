@@ -8,10 +8,10 @@ import (
 	"strings"
 )
 
-// Global instance of Catcher used for attaching all mocks to connection
+//Catcher is global instance of Catcher used for attaching all mocks to connection
 var Catcher *MockCatcher
 
-// Global entity to save all mocks aka FakeResponses
+//MockCatcher is Global entity to save all mocks aka FakeResponses
 type MockCatcher struct {
 	Mocks                []*FakeResponse // Slice of all mocks
 	Logging              bool            // Do we need to log what we catching?
@@ -60,13 +60,13 @@ func (mc *MockCatcher) Reset() *MockCatcher {
 	return mc
 }
 
-// Possible exceptions during query executions
+//Exceptions represents	 possible exceptions during query executions
 type Exceptions struct {
 	HookQueryBadConnection func() bool
 	HookExecBadConnection  func() bool
 }
 
-// Represents mock of response with holding all required values to return mocked response
+//FakeResponse represents mock of response with holding all required values to return mocked response
 type FakeResponse struct {
 	Pattern      string                            // SQL query pattern to match with
 	Args         []interface{}                     // List args to be matched with
