@@ -3,7 +3,7 @@ go:
   - 1.6.x
   - 1.7.x
   - 1.8.x
-  - tip
+  - master
 env:
   - GOMAXPROCS=4 GORACE=halt_on_error=1
 script:
