@@ -1,5 +1,5 @@
 
-[![GoDoc](https://godoc.org/github.com/Selvatico/go-mocket?status.svg)](https://godoc.org/github.com/Selvatico/go-mocket)
+[![GoDoc](https://godoc.org/github.com/Selvatico/go-mocket?status.svg)](https://godoc.org/github.com/Selvatico/go-mocket)  [![Build Status](https://travis-ci.org/Selvatico/go-mocket.svg?branch=master)](https://travis-ci.org/Selvatico/go-mocket)
 
 ### Go-Mocket
 
