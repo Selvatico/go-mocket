@@ -10,12 +10,15 @@ import (
 
 var Catcher *MockCatcher
 
+// Global entity to save all mocks aka FakeResponses
 type MockCatcher struct {
-	Mocks                []*FakeResponse
-	Logging              bool
+	Mocks                []*FakeResponse // Slice of all mocks
+	Logging              bool // Do we need to log what we catching?
 	PanicOnEmptyResponse bool // If not response matches - do we need to panic?
 }
 
+// Attach several mocks to MockCather. Could be useful to attach mocks from some factories of mocks
+//
 func (this *MockCatcher) Attach(fr []*FakeResponse) {
 	this.Mocks = append(this.Mocks, fr...)
 }
@@ -98,11 +101,12 @@ func (fr *FakeResponse) IsMatch(query string, args []driver.NamedValue) bool {
 	return fr.isQueryMatch(query) && fr.isArgsMatch(args)
 }
 
+// Mark Response as executed. For one time catches it will not make this possible to execute anymore
 func (fr *FakeResponse) MarkAsTriggered() {
 	fr.Triggered = true
 }
 
-// For chaining init
+// Add SQL query pattern to match for
 func (fr *FakeResponse) WithQuery(query string) *FakeResponse {
 	fr.Pattern = query
 	return fr

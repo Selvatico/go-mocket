@@ -73,6 +73,8 @@ func (smt *FakeStmt) ExecContext(ctx context.Context, args []driver.NamedValue) 
 		return res, nil
 	case "UPDATE":
 		return driver.RowsAffected(fResp.RowsAffected), nil
+	case "DELETE":
+		return driver.RowsAffected(fResp.RowsAffected), nil
 	}
 	return nil, fmt.Errorf("unimplemented statement Exec command type of %q", smt.command)
 }
