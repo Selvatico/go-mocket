@@ -1,4 +1,6 @@
 
+[![GoDoc](https://godoc.org/github.com/Selvatico/go-mocket?status.svg)](https://godoc.org/github.com/Selvatico/go-mocket)
+
 ### Go-Mocket
 
 Go-Mocket is library inspired by [DATA-DOG/go-sqlmock](https://github.com/DATA-DOG/go-sqlmock)
