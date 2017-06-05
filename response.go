@@ -13,8 +13,8 @@ var Catcher *MockCatcher
 // Global entity to save all mocks aka FakeResponses
 type MockCatcher struct {
 	Mocks                []*FakeResponse // Slice of all mocks
-	Logging              bool // Do we need to log what we catching?
-	PanicOnEmptyResponse bool // If not response matches - do we need to panic?
+	Logging              bool            // Do we need to log what we catching?
+	PanicOnEmptyResponse bool            // If not response matches - do we need to panic?
 }
 
 // Attach several mocks to MockCather. Could be useful to attach mocks from some factories of mocks

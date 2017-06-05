@@ -113,7 +113,7 @@ func (smt *FakeStmt) QueryContext(ctx context.Context, args []driver.NamedValue)
 
 	// Collecting column names from first record
 	if len(fResp.Response) > 0 {
-		for colName, _ := range fResp.Response[0] {
+		for colName := range fResp.Response[0] {
 			columnNames = append(columnNames, colName)
 			colIndexes[colName] = len(columnNames) - 1
 		}

@@ -66,9 +66,9 @@ func TestResponses(t *testing.T) {
 			Catcher.Reset()
 			Catcher.Attach([]*FakeResponse{
 				{
-					Pattern:"SELECT name FROM users WHERE",
+					Pattern:  "SELECT name FROM users WHERE",
 					Response: commonReply,
-					Once: false,
+					Once:     false,
 				},
 			})
 			result := GetUsers(DB)
@@ -84,19 +84,19 @@ func TestResponses(t *testing.T) {
 			Catcher.Reset()
 			Catcher.Attach([]*FakeResponse{
 				{
-					Pattern:"SELECT name FROM users WHERE",
+					Pattern:  "SELECT name FROM users WHERE",
 					Response: commonReply,
-					Once: true,
+					Once:     true,
 				},
 			})
-			GetUsers(DB) // Trigger once to use this mock
+			GetUsers(DB)           // Trigger once to use this mock
 			result := GetUsers(DB) // trigger second time to receive empty results
 			if len(result) != 0 {
 				t.Errorf("Returned sets is not equal to 0. Received %d", len(result))
 			}
 		})
 	})
-	
+
 	t.Run("Catch by arguments", func(t *testing.T) {
 		Catcher.Reset().NewMock().WithArgs(int64(27)).WithReply(commonReply)
 		result := GetUsers(DB)

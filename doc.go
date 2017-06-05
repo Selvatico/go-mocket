@@ -79,5 +79,5 @@ Somewhere in you tests:
 
 For more information and use cases please check: https://github.com/Selvatico/go-mocket
 
- */
+*/
 package go_mocket
