@@ -1,8 +1,5 @@
 language: go
 go:
-  - 1.6.x
-  - 1.7.x
-  - 1.8.x
   - master
 env:
   - GOMAXPROCS=4 GORACE=halt_on_error=1
