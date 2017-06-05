@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Global instance of Catcher used for attaching all mocks to connection
 var Catcher *MockCatcher
 
 // Global entity to save all mocks aka FakeResponses
@@ -18,25 +19,24 @@ type MockCatcher struct {
 }
 
 // Attach several mocks to MockCather. Could be useful to attach mocks from some factories of mocks
-//
-func (this *MockCatcher) Attach(fr []*FakeResponse) {
-	this.Mocks = append(this.Mocks, fr...)
+func (mc *MockCatcher) Attach(fr []*FakeResponse) {
+	mc.Mocks = append(mc.Mocks, fr...)
 }
 
-// Find suitable response by provided
-func (this *MockCatcher) FindResponse(query string, args []driver.NamedValue) *FakeResponse {
-	if this.Logging {
+//FindResponse Finds suitable response by provided
+func (mc *MockCatcher) FindResponse(query string, args []driver.NamedValue) *FakeResponse {
+	if mc.Logging {
 		log.Printf("mock_catcher: check query: %s", query)
 	}
 
-	for _, resp := range this.Mocks {
+	for _, resp := range mc.Mocks {
 		if resp.IsMatch(query, args) {
 			resp.MarkAsTriggered()
 			return resp
 		}
 	}
 
-	if this.PanicOnEmptyResponse {
+	if mc.PanicOnEmptyResponse {
 		panic(fmt.Sprintf("No responses matches query %s ", query))
 	}
 
@@ -47,17 +47,17 @@ func (this *MockCatcher) FindResponse(query string, args []driver.NamedValue) *F
 	}
 }
 
-// Create new FakeResponse and return for chains of attachments
-func (this *MockCatcher) NewMock() *FakeResponse {
+//NewMock Creates new FakeResponse and return for chains of attachments
+func (mc *MockCatcher) NewMock() *FakeResponse {
 	fr := &FakeResponse{Exceptions: &Exceptions{}, Response: make([]map[string]interface{}, 0)}
-	this.Mocks = append(this.Mocks, fr)
+	mc.Mocks = append(mc.Mocks, fr)
 	return fr
 }
 
-// Remove all Mocks to start process again
-func (this *MockCatcher) Reset() *MockCatcher {
-	this.Mocks = make([]*FakeResponse, 0)
-	return this
+//Reset Remove all Mocks to start process again
+func (mc *MockCatcher) Reset() *MockCatcher {
+	mc.Mocks = make([]*FakeResponse, 0)
+	return mc
 }
 
 // Possible exceptions during query executions
@@ -94,6 +94,7 @@ func (fr *FakeResponse) isQueryMatch(query string) bool {
 	return fr.Pattern == "" || strings.Contains(query, fr.Pattern)
 }
 
+// IsMatch Check if both query and args matcher's return true and if this is Once mock
 func (fr *FakeResponse) IsMatch(query string, args []driver.NamedValue) bool {
 	if fr.Once && fr.Triggered {
 		return false
@@ -101,18 +102,18 @@ func (fr *FakeResponse) IsMatch(query string, args []driver.NamedValue) bool {
 	return fr.isQueryMatch(query) && fr.isArgsMatch(args)
 }
 
-// Mark Response as executed. For one time catches it will not make this possible to execute anymore
+//MarkAsTriggered Mark Response as executed. For one time catches it will not make this possible to execute anymore
 func (fr *FakeResponse) MarkAsTriggered() {
 	fr.Triggered = true
 }
 
-// Add SQL query pattern to match for
+//WithQuery Add SQL query pattern to match for
 func (fr *FakeResponse) WithQuery(query string) *FakeResponse {
 	fr.Pattern = query
 	return fr
 }
 
-// Attach Args check for prepared statements
+// WithArgs attach Args check for prepared statements
 func (fr *FakeResponse) WithArgs(vars ...interface{}) *FakeResponse {
 	if len(vars) > 0 {
 		fr.Args = make([]interface{}, len(vars))
@@ -123,18 +124,19 @@ func (fr *FakeResponse) WithArgs(vars ...interface{}) *FakeResponse {
 	return fr
 }
 
-// Methods to chain and assign some parts of response
-
+// WithReply adds to chain and assign some parts of response
 func (fr *FakeResponse) WithReply(response []map[string]interface{}) *FakeResponse {
 	fr.Response = response
 	return fr
 }
 
+// OneTime set current mock to be triggered only once
 func (fr *FakeResponse) OneTime() *FakeResponse {
 	fr.Once = true
 	return fr
 }
 
+// WithExecException says that if mock attached to non-SELECT query we need to trigger error there
 func (fr *FakeResponse) WithExecException() *FakeResponse {
 	fr.Exceptions.HookExecBadConnection = func() bool {
 		return true
@@ -142,6 +144,7 @@ func (fr *FakeResponse) WithExecException() *FakeResponse {
 	return fr
 }
 
+// WithQueryException add to SELECT mocks triggering of error
 func (fr *FakeResponse) WithQueryException() *FakeResponse {
 	fr.Exceptions.HookQueryBadConnection = func() bool {
 		return true
@@ -149,16 +152,19 @@ func (fr *FakeResponse) WithQueryException() *FakeResponse {
 	return fr
 }
 
+// WithCallback adds callback to be executed during matching
 func (fr *FakeResponse) WithCallback(f func(string, []driver.NamedValue)) *FakeResponse {
 	fr.Callback = f
 	return fr
 }
 
+// WithRowsNum specify how many records to consider as affected
 func (fr *FakeResponse) WithRowsNum(num int64) *FakeResponse {
 	fr.RowsAffected = num
 	return fr
 }
 
+// WithId set ID to be considered as insert ID for INSERT statements
 func (fr *FakeResponse) WithId(id int64) *FakeResponse {
 	fr.LastInsertId = id
 	return fr
