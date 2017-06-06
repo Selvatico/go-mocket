@@ -30,7 +30,7 @@ go get github.com/selvatico/go-mocket
 There are two possible ways to use `mocket`:
 
 * Chaining API
-* Specifying `FakeResponse` object with all fields manually. Could be useful for
+* Specifying `FakeResponse` object with all fields manually. Could be useful for cases when mocks stored separately as list of FakeResponses. 
 
 ##### Enabling driver
 
