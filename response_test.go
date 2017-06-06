@@ -43,6 +43,15 @@ func CreateUsersWithError(db *sql.DB) error {
 	return err
 }
 
+func InsertRecord(db *sql.DB) int64  {
+	res, err := db.Exec(`INSERT INTO foo VALUES("bar", ?))`, "value")
+	if err != nil {
+		return 0
+	}
+	id, _ := res.LastInsertId()
+	return id
+}
+
 func TestResponses(t *testing.T) {
 	sql.Register("fake_test", FakeDriver{})
 	db, _ := sql.Open("fake_test", "connection_string") // Could be any connection string
@@ -123,5 +132,15 @@ func TestResponses(t *testing.T) {
 				t.Fatal("Error not triggered")
 			}
 		})
+	})
+
+	t.Run("Last insert id", func(t *testing.T) {
+		var mockedId int64
+		mockedId = 64
+		Catcher.Reset().NewMock().WithQuery("INSERT INTO foo").WithId(mockedId)
+		returnedId := InsertRecord(DB)
+		if returnedId != mockedId {
+			t.Fatalf("Last insert id not returned. Expected: [%v] , Got: [%v]", mockedId, returnedId)
+		}
 	})
 }
