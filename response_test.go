@@ -53,8 +53,8 @@ func InsertRecord(db *sql.DB) int64  {
 }
 
 func TestResponses(t *testing.T) {
-	sql.Register("fake_test", FakeDriver{})
-	db, _ := sql.Open("fake_test", "connection_string") // Could be any connection string
+	Catcher.Register()
+	db, _ := sql.Open(DRIVER_NAME, "connection_string") // Could be any connection string
 	DB = db
 	commonReply := []map[string]interface{}{{"name": "FirstLast", "age": "30"}}
 
