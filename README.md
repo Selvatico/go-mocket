@@ -22,7 +22,7 @@ List of features in the library:
 #### Install
 
 ```
-go get github.com/selvatico/go-mocket
+go get github.com/Selvatico/go-mocket
 ```
 
 #### Usage
@@ -39,18 +39,18 @@ Somewhere in you code to setup a tests
 ```go
 import (
     "database/sql"
-    mocket "github.com/selvatico/go-mocket"
+    mocket "github.com/Selvatico/go-mocket"
     "github.com/jinzhu/gorm"
 )
 
 func SetupTests() {
-    sql.Register("fake_test", mocket.FakeDriver{})
+    mocket.Catcher.Register()
     // GORM
-    db, err := gorm.Open("fake_test", "connection_string") // Could be any connection string
+    db, err := gorm.Open(mocket.DRIVER_NAME, "any_string") // Could be any connection string
     app.DB = db // assumption that it will be used everywhere the same
     //OR 
     // Regular sql package usage
-    db, err := sql.Open(driver, source)
+    db, err := sql.Open(mocket.DRIVER_NAME, "any_string")
 }
 ```
 
@@ -61,7 +61,7 @@ Now if use singleton instance of DB it will use everywhere mocked connection.
 ###### Example of mocking by pattern
 
 ```go
-import mocket "github.com/selvatico/go-mocket"
+import mocket "github.com/Selvatico/go-mocket"
 import "net/http/httptest"
 
 func TestHandler(t *testing.T) {

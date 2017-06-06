@@ -6,6 +6,10 @@ import (
 	"log"
 	"reflect"
 	"strings"
+	"database/sql"
+)
+const (
+	DRIVER_NAME = "MOCK_FAKE_DRIVER"
 )
 
 //Catcher is global instance of Catcher used for attaching all mocks to connection
@@ -16,6 +20,17 @@ type MockCatcher struct {
 	Mocks                []*FakeResponse // Slice of all mocks
 	Logging              bool            // Do we need to log what we catching?
 	PanicOnEmptyResponse bool            // If not response matches - do we need to panic?
+}
+
+// Register safely register FakeDriver
+func (mc *MockCatcher) Register() {
+	driversList := sql.Drivers()
+	for _, name := range driversList {
+		if name == DRIVER_NAME {
+			return
+		}
+	}
+	sql.Register(DRIVER_NAME, FakeDriver{})
 }
 
 // Attach several mocks to MockCather. Could be useful to attach mocks from some factories of mocks

@@ -5,14 +5,14 @@ First you need to activate package somewhere in your tests code like this
 
 	import (
     	"database/sql"
-    	mocket "github.com/selvatico/go-mocket"
+    	mocket "github.com/Selvatico/go-mocket"
     	"github.com/jinzhu/gorm"
 	)
 
 	var DB *gorm.DB
 
 	func SetupTests() {
-    	sql.Register("fake_test", mocket.FakeDriver{})
+    	mocket.Catcher.Register()
     	// GORM
     	db, err := gorm.Open("fake_test", "connection_string") // Could be any connection string
     	DB = db
@@ -55,11 +55,11 @@ Somewhere in you tests:
 		"log"
 		"testing"
 		"database/sql"
-		mocket "github.com/selvatico/go-mocket"
+		mocket "github.com/Selvatico/go-mocket"
 	)
 
 	func TestResponses (t *testing.T) {
-		sql.Register("fake_test", FakeDriver{})
+		mocket.Catcher.Register()
 		db, _ := sql.Open("fake_test", "connection_string") // Could be any connection string
 		DB = db
 
