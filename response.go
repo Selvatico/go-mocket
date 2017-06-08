@@ -1,13 +1,14 @@
 package go_mocket
 
 import (
+	"database/sql"
 	"database/sql/driver"
 	"fmt"
 	"log"
 	"reflect"
 	"strings"
-	"database/sql"
 )
+
 const (
 	DRIVER_NAME = "MOCK_FAKE_DRIVER"
 )

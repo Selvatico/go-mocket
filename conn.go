@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql/driver"
 	"errors"
+	"log"
+	"regexp"
 	"strings"
 	"sync"
 )
@@ -66,9 +68,19 @@ func (c *FakeConn) Prepare(query string) (driver.Stmt, error) {
 // context is for the preparation of the statement,
 // it must not store the context within the statement itself.
 func (c *FakeConn) PrepareContext(ctx context.Context, query string) (driver.Stmt, error) {
-	var firstStmt = &FakeStmt{q: query, connection: c}          // Create statement
-	firstStmt.placeholders = len(strings.Split(query, "?")) - 1 // Checking how many placeholders do we have
-	queryParts := strings.Split(query, " ")                     // By First statement define the query type
+	var firstStmt = &FakeStmt{q: query, connection: c}
+	// Checking how many placeholders do we have
+	if strings.Contains(query, "$1") {
+		r, err := regexp.Compile(`[$]\d+`)
+		if err != nil {
+			log.Fatalf(`Cant't compile regexp with err [%v]`, err)
+		}
+		firstStmt.placeholders = len(strings.Split(r.ReplaceAllString(query, `$$$`), "$$")) - 1 // Postgres notation
+	} else {
+		firstStmt.placeholders = len(strings.Split(query, "?")) - 1 // Postgres notation
+	}
+
+	queryParts := strings.Split(query, " ") // By First statement define the query type
 	firstStmt.command = strings.ToUpper(queryParts[0])
 	return firstStmt, nil
 }

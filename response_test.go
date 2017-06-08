@@ -43,7 +43,7 @@ func CreateUsersWithError(db *sql.DB) error {
 	return err
 }
 
-func InsertRecord(db *sql.DB) int64  {
+func InsertRecord(db *sql.DB) int64 {
 	res, err := db.Exec(`INSERT INTO foo VALUES("bar", ?))`, "value")
 	if err != nil {
 		return 0
@@ -142,5 +142,27 @@ func TestResponses(t *testing.T) {
 		if returnedId != mockedId {
 			t.Fatalf("Last insert id not returned. Expected: [%v] , Got: [%v]", mockedId, returnedId)
 		}
+	})
+
+	t.Run(`Recognise both ? and $1 Postgres placeholders for raw query`, func(t *testing.T) {
+		t.Run("Question mark", func(t *testing.T) {
+			testFunc := func(db *sql.DB) string {
+				var name string
+				err := db.QueryRow(`SELECT * FROM foo a = $1 AND b = $2 AND c = $3`, "value", "value2", "value3").Scan(&name)
+				if err != nil {
+					t.Fatalf("Test function failed [%v]", err)
+					return ""
+				}
+				return name
+			}
+
+			Catcher.Reset().NewMock().WithQuery("SELECT * FROM foo ").WithReply([]map[string]interface{}{{"name": "full_name"}})
+			returnedName := testFunc(DB)
+
+			if returnedName != "full_name" {
+				t.Fatalf("Returned name mismatches. Expected: [%v] , Got: [%v]", "full_name", returnedName)
+			}
+
+		})
 	})
 }
