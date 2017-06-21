@@ -68,6 +68,10 @@ func (smt *FakeStmt) ExecContext(ctx context.Context, args []driver.NamedValue) 
 		return nil, driver.ErrBadConn
 	}
 
+	if fResp.Error != nil {
+		return nil, fResp.Error
+	}
+
 	if fResp.Callback != nil {
 		fResp.Callback(smt.q, args)
 	}
@@ -116,6 +120,10 @@ func (smt *FakeStmt) QueryContext(ctx context.Context, args []driver.NamedValue)
 
 	if fResp.Exceptions != nil && fResp.Exceptions.HookQueryBadConnection != nil && fResp.Exceptions.HookQueryBadConnection() {
 		return nil, driver.ErrBadConn
+	}
+
+	if fResp.Error != nil {
+		return nil, fResp.Error
 	}
 
 	resultRows := make([][]*row, 0, 1)
