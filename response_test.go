@@ -117,7 +117,7 @@ func TestResponses(t *testing.T) {
 		}
 	})
 
-	t.Run("Exceptions", func(t *testing.T) {
+	t.Run("Exceptions and Errors", func(t *testing.T) {
 		t.Run("Fire Query error", func(t *testing.T) {
 			Catcher.Reset().NewMock().WithArgs(int64(27)).WithReply(commonReply).WithQueryException()
 			err := GetUsersWithError(DB)
@@ -129,6 +129,13 @@ func TestResponses(t *testing.T) {
 			Catcher.Reset().NewMock().WithQuery("INSERT INTO users (age)").WithQueryException()
 			err := CreateUsersWithError(DB)
 			if err == nil {
+				t.Fatal("Error not triggered")
+			}
+		})
+		t.Run("Fire Execute error", func(t *testing.T) {
+			Catcher.Reset().NewMock().WithQuery("INSERT INTO users (age)").WithError(sql.ErrNoRows)
+			err := CreateUsersWithError(DB)
+			if err == nil || err != sql.ErrNoRows {
 				t.Fatal("Error not triggered")
 			}
 		})
