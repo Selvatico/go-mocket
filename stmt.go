@@ -146,7 +146,7 @@ func (smt *FakeStmt) QueryContext(ctx context.Context, args []driver.NamedValue)
 	for _, record := range fResp.Response {
 		oneRow := &row{cols: make([]interface{}, len(columnNames))}
 		for _, col := range columnNames {
-			oneRow.cols[colIndexes[col]] = []byte(record[col].(string))
+			oneRow.cols[colIndexes[col]] = record[col]
 		}
 		rows = append(rows, oneRow)
 	}
