@@ -50,7 +50,7 @@ func (mc *MockCatcher) Attach(fr []*FakeResponse) {
 //FindResponse finds suitable response by provided
 func (mc *MockCatcher) FindResponse(query string, args []driver.NamedValue) *FakeResponse {
 	mc.mu.Lock()
-	defer mc.my.Unlock()
+	defer mc.mu.Unlock()
 	if mc.Logging {
 		log.Printf("mock_catcher: check query: %s", query)
 	}
