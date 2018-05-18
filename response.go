@@ -22,6 +22,7 @@ type MockCatcher struct {
 	Mocks                []*FakeResponse // Slice of all mocks
 	Logging              bool            // Do we need to log what we catching?
 	PanicOnEmptyResponse bool            // If not response matches - do we need to panic?
+	mu                   sync.Mutex
 }
 
 // Register safely register FakeDriver
@@ -66,6 +67,8 @@ func (mc *MockCatcher) FindResponse(query string, args []driver.NamedValue) *Fak
 
 //NewMock creates new FakeResponse and return for chains of attachments
 func (mc *MockCatcher) NewMock() *FakeResponse {
+	mc.mu.Lock()
+	defer mc.mu.Unlock()
 	fr := &FakeResponse{Exceptions: &Exceptions{}, Response: make([]map[string]interface{}, 0)}
 	mc.Mocks = append(mc.Mocks, fr)
 	return fr
