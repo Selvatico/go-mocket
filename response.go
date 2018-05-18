@@ -25,6 +25,12 @@ type MockCatcher struct {
 	mu                   sync.Mutex
 }
 
+func (mc *MockCatcher) SetLogging(l bool) {
+	mc.mu.Lock()
+	defer mc.mu.Unlock()
+	mc.Logging = l
+}
+
 // Register safely register FakeDriver
 func (mc *MockCatcher) Register() {
 	driversList := sql.Drivers()
