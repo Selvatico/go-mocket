@@ -7,6 +7,7 @@ import (
 	"log"
 	"reflect"
 	"strings"
+	"sync"
 )
 
 const (
@@ -93,6 +94,7 @@ type FakeResponse struct {
 	RowsAffected int64                             // Defines affected rows count
 	LastInsertId int64                             // ID to be returned for INSERT queries
 	Error        error                             // Any type of error which could happen dur
+	mu           sync.Mutex                        // Used to lock concurrent access to variables
 	*Exceptions
 }
 
@@ -121,6 +123,8 @@ func (fr *FakeResponse) IsMatch(query string, args []driver.NamedValue) bool {
 
 //MarkAsTriggered marks response as executed. For one time catches it will not make this possible to execute anymore
 func (fr *FakeResponse) MarkAsTriggered() {
+	fr.mu.Lock()
+	defer fr.mu.Unlock()
 	fr.Triggered = true
 }
 
