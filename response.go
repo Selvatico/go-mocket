@@ -148,6 +148,8 @@ func (fr *FakeResponse) MarkAsTriggered() {
 
 //WithQuery adds SQL query pattern to match for
 func (fr *FakeResponse) WithQuery(query string) *FakeResponse {
+	fr.mu.Lock()
+	defer fr.mu.Unlock()
 	fr.Pattern = query
 	return fr
 }
