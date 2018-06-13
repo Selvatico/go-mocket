@@ -84,6 +84,8 @@ func (mc *MockCatcher) NewMock() *FakeResponse {
 
 //Reset removes all Mocks to start process again
 func (mc *MockCatcher) Reset() *MockCatcher {
+	mc.mu.Lock()
+	defer mc.mu.Unlock()
 	mc.Mocks = make([]*FakeResponse, 0)
 	return mc
 }
