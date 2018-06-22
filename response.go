@@ -169,6 +169,8 @@ func (fr *FakeResponse) WithArgs(vars ...interface{}) *FakeResponse {
 
 // WithReply adds to chain and assign some parts of response
 func (fr *FakeResponse) WithReply(response []map[string]interface{}) *FakeResponse {
+	fr.mu.Lock()
+	defer fr.mu.Unlock()
 	fr.Response = response
 	return fr
 }
