@@ -59,14 +59,30 @@ func TestResponses(t *testing.T) {
 	commonReply := []map[string]interface{}{{"name": "FirstLast", "age": "30"}}
 
 	t.Run("Simple SELECT caught by query", func(t *testing.T) {
-		Catcher.Logging = false
-		Catcher.Reset().NewMock().WithQuery(`SELECT name FROM users WHERE`).WithReply(commonReply)
+		Catcher.Logging = true
+		fr := Catcher.Reset().NewMock().WithQuery(`SELECT name FROM users WHERE`).WithReply(commonReply)
+		t.Log("result", fr)
 		result := GetUsers(DB)
+		t.Log("result", result)
 		if len(result) != 1 {
-			t.Errorf("Returned sets is not equal to 1. Received %d", len(result))
+			t.Fatalf("Returned sets is not equal to 1. Received %d", len(result))
 		}
 		if result[0]["age"] != "30" {
 			t.Errorf("Age is not equal. Got %v", result[0]["age"])
+		}
+	})
+
+	t.Run("Simple SELECT caught by query in strict mode", func(t *testing.T) {
+		Catcher.Logging = false
+		Catcher.Reset().NewMock().WithQuery(`SELECT name FROM users`).StrictMatch().WithReply(commonReply)
+		result := GetUsers(DB)
+		if len(result) != 0 {
+			t.Errorf("Returned sets is not equal to 0. Received %d", len(result))
+		}
+		Catcher.Reset().NewMock().WithQuery(`SELECT name FROM users`).WithReply(commonReply)
+		result = GetUsers(DB)
+		if len(result) != 1 {
+			t.Errorf("Returned sets is not equal to 1. Received %d", len(result))
 		}
 	})
 
