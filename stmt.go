@@ -16,7 +16,7 @@ type FakeStmt struct {
 	command      string    // String name of the command SELECT etc, taken as first word in the query
 	next         *FakeStmt // used for returning multiple results.
 	closed       bool      // If connection closed already
-	colName      []string  //Names of columns in response
+	colName      []string  // Names of columns in response
 	colType      []string  // Not used for now
 	placeholders int       // Amount of passed args
 }
@@ -137,8 +137,8 @@ func (smt *FakeStmt) QueryContext(ctx context.Context, args []driver.NamedValue)
 	// Collecting column names from first record
 	if len(fResp.Response) > 0 {
 		for colName := range fResp.Response[0] {
+			colIndexes[colName] = len(columnNames)
 			columnNames = append(columnNames, colName)
-			colIndexes[colName] = len(columnNames) - 1
 		}
 	}
 
