@@ -33,7 +33,7 @@ There are two possible ways to use `mocket`:
 
 ##### Enabling driver
 
-Somewhere in your code to set up a tests
+Somewhere in your code, do this to set up a tests
 
 ```go
 import (
@@ -46,14 +46,14 @@ func SetupTests() {
     mocket.Catcher.Register()
     // GORM
     db, err := gorm.Open(mocket.DRIVER_NAME, "any_string") // Could be any connection string
-    app.DB = db // assumption that it will be used everywhere the same
+    app.DB = db // Assumption that it will be used everywhere the same
     //OR 
     // Regular sql package usage
     db, err := sql.Open(mocket.DRIVER_NAME, "any_string")
 }
 ```
 
-Now if use singleton instance of DB, it uses everywhere mocked connection.
+Now, if you use a singleton instance of DB, it will use a mocked connection everywhere.
 
 ##### Chain usage
 
@@ -70,7 +70,8 @@ func TestHandler(t *testing.T) {
     GlobalMock := mocket.Catcher
     GlobalMock.Logging = true // log mocket behavior
 
-    commonReply := []map[string]interface{}{{"id": "2", "field": "value"}}
+    // field names here mapped to the database schema
+    commonReply := []map[string]interface{}{{"some_id": "2", "field": "value"}}
     // Mock only by query pattern
     GlobalMock.NewMock().WithQuery(`"campaigns".name IS NULL AND (("uuid" = test_uuid))`).WithReply(commonReply)
     Post(recorder, request) // call handler
