@@ -65,8 +65,8 @@ func TestResponses(t *testing.T) {
 		if len(result) != 1 {
 			t.Errorf("Returned sets is not equal to 1. Received %d", len(result))
 		}
-		if result[0]["age"] != "30" {
-			t.Errorf("Age is not equal. Got %v", result[0]["age"])
+		if result[0]["name"] != "FirstLast" {
+			t.Errorf("Name is not equal. Got %v", result[0]["name"])
 		}
 	})
 
