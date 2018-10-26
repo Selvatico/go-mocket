@@ -1,3 +1,5 @@
+package gomocket
+
 /*
 Package go_mocket is way to mock DB for GORM and just sql package usage
 First you need to activate package somewhere in your tests code like this
@@ -80,4 +82,3 @@ Somewhere in you tests:
 For more information and use cases please check: https://github.com/Selvatico/go-mocket
 
 */
-package go_mocket

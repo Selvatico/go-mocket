@@ -45,11 +45,11 @@ import (
 func SetupTests() {
     mocket.Catcher.Register()
     // GORM
-    db, err := gorm.Open(mocket.DRIVER_NAME, "any_string") // Could be any connection string
+    db, err := gorm.Open(mocket.DriverName, "any_string") // Could be any connection string
     app.DB = db // Assumption that it will be used everywhere the same
     //OR 
     // Regular sql package usage
-    db, err := sql.Open(mocket.DRIVER_NAME, "any_string")
+    db, err := sql.Open(mocket.DriverName, "any_string")
 }
 ```
 
