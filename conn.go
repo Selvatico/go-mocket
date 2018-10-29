@@ -1,4 +1,4 @@
-package go_mocket
+package gomocket
 
 import (
 	"context"
@@ -34,6 +34,7 @@ func (c *FakeConn) Begin() (driver.Tx, error) {
 	return c.currTx, nil
 }
 
+// Close terminates the db object
 func (c *FakeConn) Close() (err error) {
 	c.db = nil
 	return nil

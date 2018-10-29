@@ -1,4 +1,4 @@
-package go_mocket
+package gomocket
 
 import (
 	"database/sql/driver"
@@ -18,6 +18,7 @@ type FakeDriver struct {
 	dbs        map[string]*FakeDB
 }
 
+// FakeDB represents the database
 type FakeDB struct {
 	name    string
 	mu      sync.Mutex
@@ -25,6 +26,7 @@ type FakeDB struct {
 	badConn bool
 }
 
+// table represents the table
 type table struct {
 	mu      sync.Mutex
 	colname []string
@@ -42,7 +44,7 @@ func (t *table) columnIndex(name string) int {
 }
 
 // Open returns a new connection to the database.
-func (d FakeDriver) Open(database string) (driver.Conn, error) {
+func (d *FakeDriver) Open(database string) (driver.Conn, error) {
 	return &FakeConn{db: d.getDB(database)}, nil
 }
 

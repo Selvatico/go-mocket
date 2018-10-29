@@ -1,4 +1,4 @@
-package go_mocket
+package gomocket
 
 import (
 	"database/sql/driver"
@@ -11,8 +11,8 @@ type FakeResult struct {
 }
 
 // NewFakeResult returns result interface instance
-func NewFakeResult(insertId int64, rowsAffected int64) driver.Result {
-	return &FakeResult{insertId, rowsAffected}
+func NewFakeResult(insertID int64, rowsAffected int64) driver.Result {
+	return &FakeResult{insertID, rowsAffected}
 }
 
 // LastInsertId required to give sql package ability get ID of inserted record
@@ -20,7 +20,7 @@ func (fr *FakeResult) LastInsertId() (int64, error) {
 	return fr.insertID, nil
 }
 
-//  RowsAffected returns the number of rows affected
+// RowsAffected returns the number of rows affected
 func (fr *FakeResult) RowsAffected() (int64, error) {
 	return fr.rowsAffected, nil
 }

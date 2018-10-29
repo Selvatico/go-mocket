@@ -15,12 +15,12 @@ import (
 func SetupTests() *sql.DB { // or *gorm.DB
   mocket.Catcher.Register() // Safe register. Allowed multiple calls to save
   // GORM
-  db, err := gorm.Open(mocket.DRIVER_NAME, "connection_string") // Can be any connection string
+  db, err := gorm.Open(mocket.DriverName, "connection_string") // Can be any connection string
   DB = db
 
    // OR
    // Regular sql package usage
-   db, err := sql.Open(mocket.DRIVER_NAME, "connection_string")
+   db, err := sql.Open(mocket.DriverName, "connection_string")
 
    return db
 }
@@ -158,9 +158,9 @@ t.Run("Once", func(t *testing.T) {
 })
 ```
 
-### Insert ID with `.WithId(int64)`
+### Insert ID with `.WithID(int64)`
 
-In order to emulate `INSERT` requests, we can mock the ID returned from the query with the `.WithId(int64)` method.
+In order to emulate `INSERT` requests, we can mock the ID returned from the query with the `.WithID(int64)` method.
 
 ```go
 // Somewhere in the code
@@ -169,7 +169,7 @@ func InsertRecord(db *sql.DB) int64  {
    if err != nil {
      return 0
    }
-   id, _ := res.LastInsertId()
+   id, _ := res.LastInsertID()
    return id
 }
 
@@ -177,7 +177,7 @@ func InsertRecord(db *sql.DB) int64  {
 t.Run("Last insert id", func(t *testing.T) {
    var mockedId int64
    mockedId = 64
-   Catcher.Reset().NewMock().WithQuery("INSERT INTO foo").WithId(mockedId)
+   Catcher.Reset().NewMock().WithQuery("INSERT INTO foo").WithID(mockedId)
    returnedId := InsertRecord(DB)
    if returnedId != mockedId {
      t.Fatalf("Last insert id not returned. Expected: [%v] , Got: [%v]", mockedId, returnedId)
