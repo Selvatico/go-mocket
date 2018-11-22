@@ -1,37 +1,38 @@
 [![GoDoc](https://godoc.org/github.com/Selvatico/go-mocket?status.svg)](https://godoc.org/github.com/Selvatico/go-mocket)  [![Build Status](https://travis-ci.org/Selvatico/go-mocket.svg?branch=master)](https://travis-ci.org/Selvatico/go-mocket) [![Go Report Card](https://goreportcard.com/badge/github.com/Selvatico/go-mocket)](https://goreportcard.com/report/github.com/Selvatico/go-mocket)
 
-### Go-Mocket
+# Go-Mocket – Go GORM & SQL mocking library
 
-Go-Mocket is library inspired by [DATA-DOG/go-sqlmock](https://github.com/DATA-DOG/go-sqlmock)
-As inspiration library, it is the implementation of [sql/driver](https://godoc.org/database/sql/driver) interface but at the same time follows different approaches and has only a similar API.
-This library helps to mock any DB connection also with [jinzhu/gorm](https://github.com/jinzhu/gorm), and it was the main goal to create it
+Go-Mocket is a library inspired by [DATA-DOG/go-sqlmock](https://github.com/DATA-DOG/go-sqlmock).
+
+As an inspiration library, it is the implementation of [sql/driver](https://godoc.org/database/sql/driver) interface but at the same time it follows a different approach and only has a similar API.
+This library helps to mock any DB connection with [jinzhu/gorm](https://github.com/jinzhu/gorm), as it was the created to serve this purpose.
 
 List of features in the library:
 
 * Mock `INSERT`, `UPDATE`, `SELECT`, `DELETE`
-* Support of transactions
+* Support for transactions
 * 2 API's to use - `chaining` and via specifying a whole mock object
 * Matching by prepared statements arguments
 * You don't require to change anything inside your code to start using this library
 * Ability to trigger exceptions
-* Attach callbacks to mocked response to add an additional check or modify a response
+* Attach callbacks to mocked responses to add an additional check or modify a response
 
-**NOTE**, Please be aware that driver catches SQL without DB specifics. Generating of queries is done by *SQL* package
+**NOTE**, Please be aware that driver catches SQL without DB specifics. Generation of queries is done by *SQL* package
 
-#### Install
+## Install
 
 ```
 go get github.com/Selvatico/go-mocket
 ```
 
-#### Usage
+## Usage
 
 There are two possible ways to use `mocket`:
 
 * Chaining API
 * Specifying `FakeResponse` object with all fields manually. Could be useful for cases when mocks stored separately as the list of FakeResponses. 
 
-##### Enabling driver
+### Enabling driver
 
 Somewhere in your code, do this to set up a tests
 
@@ -55,9 +56,9 @@ func SetupTests() {
 
 Now, if you use a singleton instance of DB, it will use a mocked connection everywhere.
 
-##### Chain usage
+### Chain usage
 
-###### Example of mocking by pattern
+#### Example of mocking by pattern
 
 ```go
 import mocket "github.com/Selvatico/go-mocket"
@@ -85,13 +86,12 @@ func TestHandler(t *testing.T) {
 
 ```
 
-### Documentation
+## Documentation
 
 
-For More Documentation please check [Wiki Documentation](https://github.com/Selvatico/go-mocket/wiki/Documentation)
+For more documentation please consult the [Documentation](https://github.com/Selvatico/go-mocket/blob/master/DOCUMENTATION.md)
 
-### License
-
+## License
 
 MIT License
 
