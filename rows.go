@@ -1,4 +1,4 @@
-package go_mocket
+package gomocket
 
 import (
 	"database/sql"
@@ -45,7 +45,7 @@ func (rc *RowsCursor) Columns() []string {
 	return rc.cols
 }
 
-// RowsColumnTypeScanType may be implemented by Rows. It should return
+// ColumnTypeScanType may be implemented by Rows. It should return
 // the value type that can be used to scan types into.
 func (rc *RowsCursor) ColumnTypeScanType(index int) reflect.Type {
 	return colTypeToReflectType(rc.colType[rc.posSet][index])
