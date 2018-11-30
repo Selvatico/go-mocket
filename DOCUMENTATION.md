@@ -240,7 +240,7 @@ t.Run("Fire Query error", func(t *testing.T) {
 })
 
 t.Run("Fire Execute error", func(t *testing.T) {
-   Catcher.Reset().NewMock().WithQuery("INSERT INTO users (age)").WithQueryException()
+   Catcher.Reset().NewMock().WithQuery("INSERT INTO users (age)").WithExecException()
    err := CreateUsersWithError(DB)
    if err == nil {
 	 t.Fatal("Error not triggered")
