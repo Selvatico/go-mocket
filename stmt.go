@@ -1,4 +1,4 @@
-package go_mocket
+package gomocket
 
 import (
 	"context"
@@ -27,6 +27,7 @@ func (s *FakeStmt) ColumnConverter(idx int) driver.ValueConverter {
 	return driver.DefaultParameterConverter
 }
 
+// Close closes the connection
 func (s *FakeStmt) Close() error {
 	// No connection added
 	if s.connection == nil {
@@ -50,18 +51,18 @@ var errClosed = errors.New("fake_db_driver: statement has been closed")
 // as an INSERT or UPDATE.
 //
 // Deprecated: Drivers should implement StmtExecContext instead (or additionally).
-func (smt *FakeStmt) Exec(args []driver.Value) (driver.Result, error) {
+func (s *FakeStmt) Exec(args []driver.Value) (driver.Result, error) {
 	panic("Using ExecContext")
 }
 
 // ExecContext executes a query that doesn't return rows, such
 // as an INSERT or UPDATE.
-func (smt *FakeStmt) ExecContext(ctx context.Context, args []driver.NamedValue) (driver.Result, error) {
-	if smt.closed {
+func (s *FakeStmt) ExecContext(ctx context.Context, args []driver.NamedValue) (driver.Result, error) {
+	if s.closed {
 		return nil, errClosed
 	}
 
-	fResp := Catcher.FindResponse(smt.q, args)
+	fResp := Catcher.FindResponse(s.q, args)
 
 	// To emulate any exception during query which returns rows
 	if fResp.Exceptions != nil && fResp.Exceptions.HookExecBadConnection != nil && fResp.Exceptions.HookExecBadConnection() {
@@ -73,12 +74,12 @@ func (smt *FakeStmt) ExecContext(ctx context.Context, args []driver.NamedValue) 
 	}
 
 	if fResp.Callback != nil {
-		fResp.Callback(smt.q, args)
+		fResp.Callback(s.q, args)
 	}
 
-	switch smt.command {
+	switch s.command {
 	case "INSERT":
-		id := fResp.LastInsertId
+		id := fResp.LastInsertID
 		if id == 0 {
 			id = rand.Int63()
 		}
@@ -89,7 +90,7 @@ func (smt *FakeStmt) ExecContext(ctx context.Context, args []driver.NamedValue) 
 	case "DELETE":
 		return driver.RowsAffected(fResp.RowsAffected), nil
 	}
-	return nil, fmt.Errorf("unimplemented statement Exec command type of %q", smt.command)
+	return nil, fmt.Errorf("unimplemented statement Exec command type of %q", s.command)
 }
 
 // Query executes a query that may return rows, such as a
@@ -102,21 +103,21 @@ func (s *FakeStmt) Query(args []driver.Value) (driver.Rows, error) {
 
 // QueryContext executes a query that may return rows, such as a
 // SELECT.
-func (smt *FakeStmt) QueryContext(ctx context.Context, args []driver.NamedValue) (driver.Rows, error) {
+func (s *FakeStmt) QueryContext(ctx context.Context, args []driver.NamedValue) (driver.Rows, error) {
 
-	if smt.closed {
+	if s.closed {
 		return nil, errClosed
 	}
 
 	if len(args) > 0 {
 		// Replace all "?" to "%v" and replace them with the values after
 		for i := 0; i < len(args); i++ {
-			smt.q = strings.Replace(smt.q, "?", "%v", 1)
-			smt.q = fmt.Sprintf(smt.q, args[i].Value)
+			s.q = strings.Replace(s.q, "?", "%v", 1)
+			s.q = fmt.Sprintf(s.q, args[i].Value)
 		}
 	}
 
-	fResp := Catcher.FindResponse(smt.q, args)
+	fResp := Catcher.FindResponse(s.q, args)
 
 	if fResp.Exceptions != nil && fResp.Exceptions.HookQueryBadConnection != nil && fResp.Exceptions.HookQueryBadConnection() {
 		return nil, driver.ErrBadConn
@@ -162,7 +163,7 @@ func (smt *FakeStmt) QueryContext(ctx context.Context, args []driver.NamedValue)
 	}
 
 	if fResp.Callback != nil {
-		fResp.Callback(smt.q, args)
+		fResp.Callback(s.q, args)
 	}
 
 	return cursor, nil
@@ -178,9 +179,10 @@ type FakeTx struct {
 	c *FakeConn
 }
 
-// hook to simulate broken connections
+// HookBadCommit is a hook to simulate broken connections
 var HookBadCommit func() bool
 
+// Commit commits the transaction
 func (tx *FakeTx) Commit() error {
 	tx.c.currTx = nil
 	if HookBadCommit != nil && HookBadCommit() {
@@ -189,9 +191,10 @@ func (tx *FakeTx) Commit() error {
 	return nil
 }
 
-// hook to simulate broken connections
+// HookBadRollback is a hook to simulate broken connections
 var HookBadRollback func() bool
 
+// Rollback rollbacks the transaction
 func (tx *FakeTx) Rollback() error {
 	tx.c.currTx = nil
 	if HookBadRollback != nil && HookBadRollback() {

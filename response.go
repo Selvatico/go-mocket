@@ -1,4 +1,4 @@
-package go_mocket
+package gomocket
 
 import (
 	"database/sql"
@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	DRIVER_NAME = "MOCK_FAKE_DRIVER"
+	// DriverName is the name of the fake driver
+	DriverName = "MOCK_FAKE_DRIVER"
 )
 
 // Catcher is global instance of Catcher used for attaching all mocks to connection
@@ -35,11 +36,11 @@ func (mc *MockCatcher) SetLogging(l bool) {
 func (mc *MockCatcher) Register() {
 	driversList := sql.Drivers()
 	for _, name := range driversList {
-		if name == DRIVER_NAME {
+		if name == DriverName {
 			return
 		}
 	}
-	sql.Register(DRIVER_NAME, FakeDriver{})
+	sql.Register(DriverName, &FakeDriver{})
 }
 
 // Attach several mocks to MockCather. Could be useful to attach mocks from some factories of mocks
@@ -106,7 +107,7 @@ type FakeResponse struct {
 	Triggered    bool                              // If it was triggered at least once
 	Callback     func(string, []driver.NamedValue) // Callback to execute when response triggered
 	RowsAffected int64                             // Defines affected rows count
-	LastInsertId int64                             // ID to be returned for INSERT queries
+	LastInsertID int64                             // ID to be returned for INSERT queries
 	Error        error                             // Any type of error which could happen dur
 	mu           sync.Mutex                        // Used to lock concurrent access to variables
 	*Exceptions
@@ -230,9 +231,9 @@ func (fr *FakeResponse) WithRowsNum(num int64) *FakeResponse {
 	return fr
 }
 
-// WithId sets ID to be considered as insert ID for INSERT statements
-func (fr *FakeResponse) WithId(id int64) *FakeResponse {
-	fr.LastInsertId = id
+// WithID sets ID to be considered as insert ID for INSERT statements
+func (fr *FakeResponse) WithID(id int64) *FakeResponse {
+	fr.LastInsertID = id
 	return fr
 }
 

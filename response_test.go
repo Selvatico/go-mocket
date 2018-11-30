@@ -1,4 +1,4 @@
-package go_mocket
+package gomocket
 
 import (
 	"database/sql"
@@ -70,7 +70,7 @@ func InsertRecord(db *sql.DB) int64 {
 
 func TestResponses(t *testing.T) {
 	Catcher.Register()
-	db, _ := sql.Open(DRIVER_NAME, "connection_string") // Could be any connection string
+	db, _ := sql.Open(DriverName, "connection_string") // Could be any connection string
 	DB = db
 	commonReply := []map[string]interface{}{{"name": "FirstLast", "age": "30"}}
 
@@ -83,8 +83,8 @@ func TestResponses(t *testing.T) {
 		if len(result) != 1 {
 			t.Fatalf("Returned sets is not equal to 1. Received %d", len(result))
 		}
-		if result[0]["age"] != "30" {
-			t.Errorf("Age is not equal. Got %v", result[0]["age"])
+		if result[0]["name"] != "FirstLast" {
+			t.Errorf("Name is not equal. Got %v", result[0]["name"])
 		}
 	})
 
@@ -119,8 +119,8 @@ func TestResponses(t *testing.T) {
 			if len(result) != 1 {
 				t.Errorf("Returned sets is not equal to 1. Received %d", len(result))
 			}
-			if result[0]["age"] != "30" {
-				t.Errorf("Age is not equal. Got %v", result[0]["age"])
+			if result[0]["name"] != "FirstLast" {
+				t.Errorf("Name is not equal. Got %v", result[0]["name"])
 			}
 		})
 
@@ -179,12 +179,12 @@ func TestResponses(t *testing.T) {
 	})
 
 	t.Run("Last insert id", func(t *testing.T) {
-		var mockedId int64
-		mockedId = 64
-		Catcher.Reset().NewMock().WithQuery("INSERT INTO foo").WithId(mockedId)
-		returnedId := InsertRecord(DB)
-		if returnedId != mockedId {
-			t.Fatalf("Last insert id not returned. Expected: [%v] , Got: [%v]", mockedId, returnedId)
+		var mockedID int64
+		mockedID = 64
+		Catcher.Reset().NewMock().WithQuery("INSERT INTO foo").WithID(mockedID)
+		returnedID := InsertRecord(DB)
+		if returnedID != mockedID {
+			t.Fatalf("Last insert id not returned. Expected: [%v] , Got: [%v]", mockedID, returnedID)
 		}
 	})
 
