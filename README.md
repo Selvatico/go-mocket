@@ -27,7 +27,7 @@ go get github.com/Selvatico/go-mocket
 
 ## Documentation
 
-For detailed usage and examples, look at the [Documentation](https://github.com/Selvatico/go-mocket/blob/master/DOCUMENTATION.md)
+For detailed usage and examples, look at the [Documentation](/DOCUMENTATION.md)
 
 ## License
 
