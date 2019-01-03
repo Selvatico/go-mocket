@@ -86,9 +86,38 @@ func (s *FakeStmt) ExecContext(ctx context.Context, args []driver.NamedValue) (d
 		res := NewFakeResult(id, 1)
 		return res, nil
 	case "UPDATE":
-		return driver.RowsAffected(fResp.RowsAffected), nil
+		//return driver.RowsAffected(fResp.RowsAffected), nil
+		/*******************************************
+		* the code in jinzhu/scope line 360~374    *
+		********************************************
+		/ Exec perform generated SQL
+		func (scope *Scope) Exec() *Scope {
+			defer scope.trace(NowFunc())
+
+			if !scope.HasError() {
+				if result, err := scope.SQLDB().Exec(scope.SQL, scope.SQLVars...); scope.Err(err) == nil {
+
+					if count, err := result.RowsAffected(); scope.Err(err) == nil {
+						scope.db.RowsAffected = count
+					}
+					if lastInsertId, err := result.LastInsertId(); scope.Err(err) == nil {
+						scope.db.LastInsertId = lastInsertId
+					}
+				}
+			}
+			return scope
+		}
+		// ********************************************
+		// here we can see that,if the sql.Result has any error in getting RowsAffected() or
+		// LastInsertId() the gorm will result an error.
+		// driver.RowsAffected's  LastInsertId() method will get error.That would case "no LastInsertId available"
+		// error tips,when mock UPDATE
+		 */
+		 // SO: let the user decide when get error,and how many rowsAffected and lastInsetID
+		return NewFakeResult(fResp.LastInsertID,fResp.RowsAffected),nil
 	case "DELETE":
-		return driver.RowsAffected(fResp.RowsAffected), nil
+		//return driver.RowsAffected(fResp.RowsAffected), nil
+		return NewFakeResult(fResp.LastInsertID,fResp.RowsAffected),nil
 	}
 	return nil, fmt.Errorf("unimplemented statement Exec command type of %q", s.command)
 }
