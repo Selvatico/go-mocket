@@ -65,6 +65,8 @@ func (mc *MockCatcher) FindResponse(query string, args []driver.NamedValue) *Fak
 
 	if mc.PanicOnEmptyResponse {
 		panic(fmt.Sprintf("No responses matches query %s ", query))
+	} else {
+		fmt.Sprintf("No responses matches query %s ", query)
 	}
 
 	// Let's have always dummy version of response
@@ -129,8 +131,8 @@ func (fr *FakeResponse) isArgsMatch(args []driver.NamedValue) bool {
 // isQueryMatch returns true if searched query is matched FakeResponse Pattern
 func (fr *FakeResponse) isQueryMatch(query string) bool {
 	fr.mu.Lock()
-        defer fr.mu.Unlock()
-	
+	defer fr.mu.Unlock()
+
 	if fr.Pattern == "" {
 		return true
 	}
