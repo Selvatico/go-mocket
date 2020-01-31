@@ -149,11 +149,11 @@ func (fr *FakeResponse) isQueryMatch(query string) bool {
 // IsMatch checks if both query and args matcher's return true and if this is Once mock
 func (fr *FakeResponse) IsMatch(query string, args []driver.NamedValue) bool {
 	fr.mu.Lock()
+	defer fr.mu.Unlock()
+
 	if fr.Once && fr.Triggered {
-		fr.mu.Unlock()
 		return false
 	}
-	fr.mu.Unlock()
 	return fr.isQueryMatch(query) && fr.isArgsMatch(args)
 }
 
