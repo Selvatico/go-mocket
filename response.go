@@ -8,6 +8,8 @@ import (
 	"reflect"
 	"strings"
 	"sync"
+
+	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 const (
@@ -141,6 +143,12 @@ func (fr *FakeResponse) isQueryMatch(query string) bool {
 
 	if fr.Strict == false && strings.Contains(query, fr.Pattern) {
 		return true
+	}
+
+	if Catcher.Logging {
+		comp := diffmatchpatch.New()
+		diffs := comp.DiffMain(query, fr.Pattern, false)
+		fmt.Printf("query do not match with strict = %t:\n%s", fr.Strict, comp.DiffPrettyText(diffs))
 	}
 
 	return false
