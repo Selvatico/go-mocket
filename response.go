@@ -160,9 +160,16 @@ func (fr *FakeResponse) IsMatch(query string, args []driver.NamedValue) bool {
 	defer fr.mu.Unlock()
 
 	if fr.Once && fr.Triggered {
+		if Catcher.Logging {
+			fmt.Println("query already triggered")
+		}
 		return false
 	}
-	return fr.isQueryMatch(query) && fr.isArgsMatch(args)
+	argsMatch := fr.isArgsMatch(args)
+	if Catcher.Logging && args != nil {
+		fmt.Printf("query has arguments, did they match? %t\n", argsMatch)
+	}
+	return fr.isQueryMatch(query) && argsMatch
 }
 
 // MarkAsTriggered marks response as executed. For one time catches it will not make this possible to execute anymore
