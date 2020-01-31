@@ -8,6 +8,8 @@ import (
 	"reflect"
 	"strings"
 	"sync"
+
+	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 const (
@@ -129,8 +131,8 @@ func (fr *FakeResponse) isArgsMatch(args []driver.NamedValue) bool {
 // isQueryMatch returns true if searched query is matched FakeResponse Pattern
 func (fr *FakeResponse) isQueryMatch(query string) bool {
 	fr.mu.Lock()
-        defer fr.mu.Unlock()
-	
+	defer fr.mu.Unlock()
+
 	if fr.Pattern == "" {
 		return true
 	}
@@ -143,18 +145,31 @@ func (fr *FakeResponse) isQueryMatch(query string) bool {
 		return true
 	}
 
+	if Catcher.Logging {
+		comp := diffmatchpatch.New()
+		diffs := comp.DiffMain(query, fr.Pattern, false)
+		fmt.Printf("query do not match with strict = %t:\n%s", fr.Strict, comp.DiffPrettyText(diffs))
+	}
+
 	return false
 }
 
 // IsMatch checks if both query and args matcher's return true and if this is Once mock
 func (fr *FakeResponse) IsMatch(query string, args []driver.NamedValue) bool {
 	fr.mu.Lock()
+	defer fr.mu.Unlock()
+
 	if fr.Once && fr.Triggered {
-		fr.mu.Unlock()
+		if Catcher.Logging {
+			fmt.Println("query already triggered")
+		}
 		return false
 	}
-	fr.mu.Unlock()
-	return fr.isQueryMatch(query) && fr.isArgsMatch(args)
+	argsMatch := fr.isArgsMatch(args)
+	if Catcher.Logging && args != nil {
+		fmt.Printf("query has arguments, did they match? %t\n", argsMatch)
+	}
+	return fr.isQueryMatch(query) && argsMatch
 }
 
 // MarkAsTriggered marks response as executed. For one time catches it will not make this possible to execute anymore
