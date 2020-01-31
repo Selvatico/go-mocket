@@ -129,8 +129,8 @@ func (fr *FakeResponse) isArgsMatch(args []driver.NamedValue) bool {
 // isQueryMatch returns true if searched query is matched FakeResponse Pattern
 func (fr *FakeResponse) isQueryMatch(query string) bool {
 	fr.mu.Lock()
-        defer fr.mu.Unlock()
-	
+	defer fr.mu.Unlock()
+
 	if fr.Pattern == "" {
 		return true
 	}
