@@ -110,10 +110,9 @@ func (s *FakeStmt) QueryContext(ctx context.Context, args []driver.NamedValue) (
 	}
 
 	if len(args) > 0 {
-		// Replace all "?" to "%v" and replace them with the values after
+		// Replace all "?" to their proper arg
 		for i := 0; i < len(args); i++ {
-			s.q = strings.Replace(s.q, "?", "%v", 1)
-			s.q = fmt.Sprintf(s.q, args[i].Value)
+			s.q = strings.Replace(s.q, "?", fmt.Sprint(args[i].Value), 1)
 		}
 	}
 
